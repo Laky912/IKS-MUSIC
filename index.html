@@ -52,7 +52,24 @@ document.addEventListener('click',e=>{const p=e.target.closest('[data-play]'),f=
 function viewIsResults(){return !$('#resultsView').classList.contains('hide')}
 $('#genres').innerHTML=genres.map((g,i)=>'<button class="chip '+(!i?'active':'')+'" data-genre="'+esc(g)+'">'+esc(g)+'</button>').join('');
 $('#searchBtn').onclick=()=>search($('#query').value);$('#query').addEventListener('keydown',e=>{if(e.key==='Enter')search($('#query').value)});$('#discoverBtn').onclick=()=>search('new music hits mix');
-document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{const v=n.dataset.view;if(v==='search'){$('#query').focus();show('results');$('#resultTitle').textContent='Buscar en YouTube';$('#results').innerHTML='<div class="empty">Escribe una canción o artista en el buscador de arriba.</div>'}else{show(v);if(v==='favorites')render('#favorites',favorites.map(id=>cache.get(id)||{id,title:'Video guardado',channel:'YouTube',thumb:'https://i.ytimg.com/vi/'+id+'/mqdefault.jpg'}));if(v==='playlists')renderPlaylists();if(v==='settings')$('#apiKey').value=apiKey()}}});
+function navigate(v){
+ if(v==='search'){
+  show('results');$('#query').focus();$('#resultTitle').textContent='Buscar en YouTube';
+  $('#results').innerHTML='<div class="empty">Escribe una canción o artista en el buscador de arriba.</div>';
+  return;
+ }
+ show(v);
+ if(v==='favorites')render('#favorites',favorites.map(id=>cache.get(id)||{id,title:'Video guardado',channel:'YouTube',thumb:'https://i.ytimg.com/vi/'+id+'/mqdefault.jpg'}));
+ if(v==='playlists')renderPlaylists();
+ if(v==='settings')$('#apiKey').value=apiKey();
+}
+document.addEventListener('click',e=>{
+ const nav=e.target.closest('.nav[data-view]');
+ if(!nav)return;
+ e.preventDefault();
+ navigate(nav.dataset.view);
+});
+
 $('#newPlaylist').onclick=()=>{const n=prompt('Nombre de tu playlist');if(n?.trim()){playlists.push({name:n.trim(),videos:[]});saveLibrary();renderPlaylists()}};
 $('#saveKey').onclick=()=>{const k=$('#apiKey').value.trim();if(!k){status('Pega primero tu API Key.');return}try{localStorage.setItem('iksYoutubeApiKey',k);status('Clave guardada en este navegador. Puedes probar la conexión.');loadHome()}catch(e){status('El navegador bloqueó el almacenamiento. Abre IKS MUSIC con INICIAR-WINDOWS.bat.')}};
 $('#testKey').onclick=async()=>{try{status('Probando conexión con YouTube...');await ytSearch('music',1);status('¡Conexión correcta! YouTube está listo.');loadHome()}catch(e){status('No se pudo conectar: '+e.message)}};
