@@ -1,37 +1,32 @@
 # IKS MUSIC
 
-Reproductor musical ligero para Windows y navegador, con **YouTube como única fuente musical**.
+Reproductor musical web basado en videos de YouTube.
 
-## Iniciar en Windows
-1. Descarga el ZIP del repositorio y extrae la carpeta.
-2. Ejecuta `INICIAR-WINDOWS.bat`.
-3. En IKS MUSIC, abre **Configuración** y conecta tu clave de YouTube Data API v3.
-4. Busca canciones, reproduce videos y guarda tus favoritos y playlists.
+## Publicar la web en GitHub Pages
 
-Necesitas Node.js para iniciar el servidor local. Si aún no lo tienes, instala la versión LTS desde https://nodejs.org/.
+1. En GitHub abre **Settings → Pages**.
+2. En **Build and deployment**, elige **Deploy from a branch**.
+3. Selecciona la rama `main` y la carpeta `/(root)`, y guarda.
+4. La web quedará en https://laky912.github.io/IKS-MUSIC/.
 
-## Configurar YouTube (gratis)
-1. Abre https://console.cloud.google.com/ y crea un proyecto.
-2. Activa **YouTube Data API v3**: https://console.cloud.google.com/apis/library/youtube.googleapis.com
-3. En Credenciales, crea una **API Key**.
-4. Pega la clave dentro de IKS MUSIC, en Configuración, y pulsa **Guardar clave**.
-5. Pulsa **Probar conexión**.
+## Búsqueda pública sin que cada visitante use su API Key
 
-La clave se guarda en el almacenamiento local del navegador. No la publiques en GitHub ni la compartas. Si restringes la clave por sitio web, permite `http://127.0.0.1:8787/*` y limita su uso a YouTube Data API v3.
+La web puede usar un Cloudflare Worker como proxy. La clave de YouTube se guarda como secreto en Cloudflare y nunca se incluye en el HTML ni en el repositorio.
 
-## Funciones
-- Búsqueda de canciones, artistas y videos de YouTube.
-- Reproducción integrada con el reproductor oficial de YouTube.
-- Recomendaciones y exploración por géneros.
-- Favoritos y playlists guardadas localmente.
-- Controles de reproducción y avance/retroceso de la cola.
+1. Crea una cuenta gratuita en Cloudflare.
+2. Instala Node.js y Wrangler en tu PC: `npm install -g wrangler`.
+3. Desde la carpeta del proyecto, inicia sesión: `wrangler login`.
+4. En esta carpeta ejecuta: `wrangler deploy`.
+5. Configura el secreto: `wrangler secret put YOUTUBE_API_KEY` y pega tu YouTube Data API v3 key cuando Wrangler lo solicite.
+6. Copia la URL del Worker que te muestra Cloudflare y pégala en `api-config.js`, en `window.IKS_API_BASE`.
+7. Sube el cambio a GitHub. GitHub Pages publicará la versión nueva.
 
-## Notas
-- La búsqueda usa YouTube Data API v3 y está sujeta a la cuota gratuita de Google Cloud.
-- Algunos videos pueden tener desactivada la reproducción integrada por decisión de su propietario.
-- El video se reproduce dentro del reproductor oficial de YouTube; IKS MUSIC no descarga ni extrae audio.
-- El consumo de recursos/FPS depende del equipo, navegador, resolución y video reproducido.
-- Se necesita conexión a internet.
+En Google Cloud restringe la clave por API y permite únicamente **YouTube Data API v3**. No la limites por HTTP referrer: la llamada a Google la hace el Worker.
 
-## Publicar en GitHub Pages
-El reproductor usa el servidor local para su configuración y callback de reproducción. Para la experiencia recomendada en Windows, inicia con `INICIAR-WINDOWS.bat`.
+## Importante
+
+- Los visitantes no necesitan crear ni pegar una API Key.
+- Las búsquedas de todos los visitantes consumen la cuota de una sola API Key central. La cuota de YouTube Data API es compartida y puede agotarse.
+- La reproducción usa el reproductor oficial de YouTube; algunos videos pueden tener inserción deshabilitada, restricciones regionales o estar eliminados.
+- Favoritos y playlists se guardan localmente en el navegador de cada visitante.
+- No publiques nunca tu API Key en `index.html`, `api-config.js` ni en otros archivos del repositorio.
