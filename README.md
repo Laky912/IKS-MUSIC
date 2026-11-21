@@ -30,3 +30,10 @@ En Google Cloud restringe la clave por API y permite únicamente **YouTube Data 
 - La reproducción usa el reproductor oficial de YouTube; algunos videos pueden tener inserción deshabilitada, restricciones regionales o estar eliminados.
 - Favoritos y playlists se guardan localmente en el navegador de cada visitante.
 - No publiques nunca tu API Key en `index.html`, `api-config.js` ni en otros archivos del repositorio.
+
+
+## Cuentas de IKS MUSIC (prototipo local)
+
+La web incluye registro e inicio de sesión con usuario y contraseña. Las cuentas se guardan en el almacenamiento del navegador y la contraseña se guarda como hash SHA-256. El usuario `Laky912` ve el apartado de administración en ese navegador.
+
+**Limitación importante:** GitHub Pages es alojamiento estático. Este prototipo no ofrece autenticación segura real: cada navegador tiene su propia lista de cuentas, cualquier visitante puede registrar el nombre `Laky912` en su propio navegador y las cuentas no se sincronizan entre dispositivos. No uses contraseñas reutilizadas ni datos sensibles. Para tener un administrador realmente reservado y cuentas compartidas entre visitantes hace falta un servidor de autenticación; GitHub Pages por sí solo no puede hacerlo.
